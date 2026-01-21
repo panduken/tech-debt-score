@@ -16,7 +16,18 @@
     "type": "git",
     "url": "git+https://github.com/panduken/tech-debt-score.git"
   },
-  "keywords": [],
+  "keywords": [
+    "technical-debt",
+    "code-quality",
+    "static-analysis",
+    "typescript",
+    "javascript",
+    "ast",
+    "metrics",
+    "complexity",
+    "code-analysis",
+    "developer-tools"
+  ],
   "author": "@panduken",
   "license": "MIT",
   "bugs": {

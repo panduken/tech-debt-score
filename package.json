@@ -1,0 +1,35 @@
+{
+  "name": "tech-debt-score",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/cli/index.js",
+  "bin": {
+    "tech-debt-score": "./dist/cli/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc && node dist/cli/index.js",
+    "analyze": "npm run build && node dist/cli/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/panduken/tech-debt-score.git"
+  },
+  "keywords": [],
+  "author": "@panduken",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/panduken/tech-debt-score/issues"
+  },
+  "homepage": "https://github.com/panduken/tech-debt-score#readme",
+  "description": "Quantify technical debt you can actually control. Built by developers, for developers.",
+  "devDependencies": {
+    "@types/node": "^25.0.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "fast-glob": "^3.3.3"
+  }
+}

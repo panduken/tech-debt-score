@@ -3,6 +3,7 @@
  * Orchestrates the analysis by wiring together all adapters and services
  */
 
+import { resolve } from 'node:path';
 import { AnalysisService } from '../../application/services/AnalysisService.js';
 import { FileSystemReader } from '../../adapters/input/FileSystemReader.js';
 import { TypeScriptParser } from '../../adapters/input/TypeScriptParser.js';
@@ -39,9 +40,19 @@ export async function analyzeCommand(rootPath: string): Promise<void> {
   );
 
   // Build configuration
+  // Smart pattern detection:
+  // - If scanning CWD, default to looking in 'src/'
+  // - If scanning a specific directory (e.g. ./src), look for files inside it
+  const isCwd = resolve(rootPath) === process.cwd();
+  
+  const defaultPatterns = isCwd 
+    ? DEFAULT_CONFIG.patterns 
+    : ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'];
+
   const config: AnalysisConfig = {
     rootPath,
     ...DEFAULT_CONFIG,
+    patterns: defaultPatterns,
   };
 
   // Execute analysis

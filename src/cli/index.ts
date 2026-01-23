@@ -11,18 +11,32 @@ import { analyzeCommand } from './commands/analyze.js';
 async function main() {
   const args = process.argv.slice(2);
   
-  // Very simple CLI for v1 - just run analysis
-  // Future: Use commander or yargs for better CLI handling
-  
-  if (args.length === 0 || args.includes('--help') || args.includes('-h')) {
+  if (args.includes('--help') || args.includes('-h')) {
     printHelp();
     process.exit(0);
   }
 
-  const rootPath = args[0] ?? process.cwd();
+  // Parse arguments
+  let rootPath = process.cwd();
+  let jsonOutputPath: string | undefined;
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+    if (!arg) continue;
+
+    if (arg === '--json' || arg === '-j') {
+      const nextArg = args[i + 1];
+      if (nextArg && !nextArg.startsWith('-')) {
+        jsonOutputPath = nextArg;
+        i++; // Skip next arg
+      }
+    } else if (!arg.startsWith('-')) {
+      rootPath = arg;
+    }
+  }
   
   try {
-    await analyzeCommand(rootPath);
+    await analyzeCommand(rootPath, jsonOutputPath);
     process.exit(0);
   } catch (error) {
     console.error('❌ Analysis failed:', error instanceof Error ? error.message : error);
@@ -50,6 +64,11 @@ Examples:
   tech-debt-score                    # Analyze current directory
   tech-debt-score ./my-project       # Analyze specific directory
   tech-debt-score /path/to/code      # Analyze absolute path
+
+Options:
+  -h, --help            Show this help message
+  -j, --json <file>     Output JSON report to specific file
+
 
 For more information, visit:
 https://github.com/panduken/tech-debt-score

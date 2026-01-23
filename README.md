@@ -88,6 +88,14 @@ npx tech-debt-score
 npx tech-debt-score ./src
 ```
 
+### Output Options
+
+Generate a JSON report for CI/CD integration:
+
+```bash
+npx tech-debt-score . --json report.json
+```
+
 ### Development
 
 ```bash
@@ -97,8 +105,8 @@ npm run build
 # Run analysis on current project
 npm run analyze
 
-# Run with custom path
-npm run dev -- ./path/to/code
+# Run self-scan verification
+npm run scan
 ```
 
 ---
@@ -143,22 +151,25 @@ For detailed architecture information, see [TECHNICAL_DESIGN.md](./TECHNICAL_DES
 
 ## Development Status
 
-**Current Version:** 0.1.0 (Alpha)
+**Current Version:** 0.1.0 (Beta)
 
 ### ✅ Completed
 
 - [x] Hexagonal architecture setup
 - [x] Domain layer (entities and rules)
 - [x] Application layer (services and ports)
-- [x] Basic adapters (file reader, parser, reporters)
-- [x] CLI entry point
+- [x] **Full AST parsing implementation**
+- [x] **File scanning with fast-glob**
+- [x] **Code Duplication detection**
+- [x] **Circular Dependency detection**
+- [x] CLI entry point with JSON export
 
-### 🚧 In Progress
+### 🚧 Roadmap v0.2.0
 
-- [ ] Full AST parsing implementation
-- [ ] File scanning with glob patterns
-- [ ] Comprehensive unit tests
-- [ ] Integration tests
+- [ ] Configuration file support (`.tech-debt-score.json`)
+- [ ] Git integration for trend tracking
+- [ ] Ignore patterns configuration
+- [ ] Unit tests coverage improvement
 
 ### 📋 Roadmap
 

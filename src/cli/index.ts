@@ -48,34 +48,28 @@ function printHelp() {
   console.log(`
 ┌─────────────────────────────────────────────┐
 │  tech-debt-score - Quantify Technical Debt  │
-│  Built by developers, for developers        │
+│  Version: 0.1.7                             │
 └─────────────────────────────────────────────┘
 
 Usage:
-  tech-debt-score [path]
+  tech-debt-score [path] [options]
 
 Arguments:
   path              Path to analyze (default: current directory)
 
 Options:
-  -h, --help        Show this help message
-
-Examples:
-  tech-debt-score                    # Analyze current directory
-  tech-debt-score ./my-project       # Analyze specific directory
-  tech-debt-score /path/to/code      # Analyze absolute path
-
-Options:
   -h, --help            Show this help message
   -j, --json <file>     Output JSON report to specific file
 
+Examples:
+  tech-debt-score                    # Analyze current directory
+  tech-debt-score ./src              # Analyze specific directory
+  tech-debt-score . --json out.json  # Output to JSON file
 
 For more information, visit:
 https://github.com/panduken/tech-debt-score
   `);
 }
 
-// Run if executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  main();
-}
+// Always execute main since this is the binary entry point
+main();

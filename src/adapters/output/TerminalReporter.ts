@@ -55,6 +55,12 @@ export class TerminalReporter implements IReporter {
         console.log(`     ${finding.filePath}${finding.location ? `:${finding.location.startLine}` : ''}`);
       }
       console.log('\n');
+    } else if (report.metadata.filesAnalyzed > 0) {
+      console.log('✨ No issues found! Your codebase looks clean.');
+      console.log('\n');
+    } else {
+      console.log('❓ No files were analyzed. Check your configuration or directory.');
+      console.log('\n');
     }
 
     console.log('═'.repeat(60));

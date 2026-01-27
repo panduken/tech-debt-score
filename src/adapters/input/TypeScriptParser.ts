@@ -21,6 +21,36 @@ class MetricExtractor {
   ) {}
 
   /**
+   * Node types that contribute to cyclomatic complexity
+   */
+  private static readonly COMPLEXITY_KINDS = new Set<ts.SyntaxKind>([
+    ts.SyntaxKind.IfStatement,
+    ts.SyntaxKind.ForStatement,
+    ts.SyntaxKind.ForInStatement,
+    ts.SyntaxKind.ForOfStatement,
+    ts.SyntaxKind.WhileStatement,
+    ts.SyntaxKind.DoStatement,
+    ts.SyntaxKind.CaseClause,
+    ts.SyntaxKind.ConditionalExpression,
+    ts.SyntaxKind.CatchClause,
+  ]);
+
+  /**
+   * Node types that contribute to nesting depth
+   */
+  private static readonly NESTING_KINDS = new Set<ts.SyntaxKind>([
+    ts.SyntaxKind.Block,
+    ts.SyntaxKind.IfStatement,
+    ts.SyntaxKind.ForStatement,
+    ts.SyntaxKind.ForInStatement,
+    ts.SyntaxKind.ForOfStatement,
+    ts.SyntaxKind.WhileStatement,
+    ts.SyntaxKind.DoStatement,
+    ts.SyntaxKind.SwitchStatement,
+    ts.SyntaxKind.TryStatement,
+  ]);
+
+  /**
    * Extract all metrics from the source file
    */
   extract(): Metric[] {
@@ -188,23 +218,13 @@ class MetricExtractor {
     let complexity = 1; // Base complexity
 
     const countDecisionPoints = (n: ts.Node): void => {
-      // Decision point nodes
-      if (ts.isIfStatement(n)) {
-        complexity++;
-      } else if (ts.isForStatement(n) || ts.isForInStatement(n) || ts.isForOfStatement(n)) {
-        complexity++;
-      } else if (ts.isWhileStatement(n) || ts.isDoStatement(n)) {
-        complexity++;
-      } else if (ts.isCaseClause(n)) {
-        complexity++;
-      } else if (ts.isConditionalExpression(n)) {
-        complexity++; // Ternary operator
-      } else if (ts.isCatchClause(n)) {
+      if (MetricExtractor.COMPLEXITY_KINDS.has(n.kind)) {
         complexity++;
       } else if (ts.isBinaryExpression(n)) {
         // Logical operators && and ||
-        if (n.operatorToken.kind === ts.SyntaxKind.AmpersandAmpersandToken ||
-            n.operatorToken.kind === ts.SyntaxKind.BarBarToken) {
+        const op = n.operatorToken.kind;
+        if (op === ts.SyntaxKind.AmpersandAmpersandToken ||
+            op === ts.SyntaxKind.BarBarToken) {
           complexity++;
         }
       }
@@ -225,16 +245,8 @@ class MetricExtractor {
     const traverse = (n: ts.Node, depth: number): void => {
       let currentDepth = depth;
 
-      // Increment depth for nesting constructs
-      if (ts.isBlock(n) || 
-          ts.isIfStatement(n) || 
-          ts.isForStatement(n) || 
-          ts.isForInStatement(n) || 
-          ts.isForOfStatement(n) ||
-          ts.isWhileStatement(n) || 
-          ts.isDoStatement(n) ||
-          ts.isSwitchStatement(n) ||
-          ts.isTryStatement(n)) {
+      // Increment depth for nesting constructs using the static registry
+      if (MetricExtractor.NESTING_KINDS.has(n.kind)) {
         currentDepth++;
         maxDepth = Math.max(maxDepth, currentDepth);
       }

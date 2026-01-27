@@ -1,4 +1,5 @@
 import { resolve } from 'node:path';
+import { existsSync } from 'node:fs';
 import { AnalysisService } from '../../application/services/AnalysisService.js';
 import { FileSystemReader } from '../../adapters/input/FileSystemReader.js';
 import { TypeScriptParser } from '../../adapters/input/TypeScriptParser.js';
@@ -52,22 +53,22 @@ export async function analyzeCommand(rootPath: string, jsonOutputPath?: string):
     rules,
     reporter
   );
-
-  // Build configuration
-  // Smart pattern detection:
-  // - If scanning CWD, default to looking in 'src/'
-  // - If scanning a specific directory (e.g. ./src), look for files inside it
-  const isCwd = resolve(rootPath) === process.cwd();
   
-  const defaultPatterns = isCwd 
-    ? DEFAULT_CONFIG.patterns 
-    : ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'];
+  // Build configuration
+  // Use broad patterns by default and rely on ignore list for exclusions.
+  // This makes the tool structure-agnostic (works for src/, lib/, or root files).
+  const defaultPatterns = ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'];
 
   const config: AnalysisConfig = {
     rootPath,
     ...DEFAULT_CONFIG,
     patterns: defaultPatterns,
   };
+
+  // Log scan start for transparency
+  if (config.patterns.length > 0) {
+    console.log(`📂 Scanning for patterns: ${config.patterns.join(', ')}`);
+  }
 
   // Execute analysis
   await analysisService.analyze(config);

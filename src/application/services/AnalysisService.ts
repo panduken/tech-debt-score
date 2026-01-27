@@ -34,27 +34,46 @@ export class AnalysisService {
       config.patterns,
       config.ignore
     );
-    console.log(`   Found ${filePaths.length} files`);
+
+    if (filePaths.length === 0) {
+      console.log('   ❌ No files found matching patterns.');
+      console.log(`      Root: ${config.rootPath}`);
+      console.log(`      Patterns: ${config.patterns.join(', ')}`);
+      console.log('      Check your directory structure and ensure files exist.');
+    } else {
+      console.log(`   Found ${filePaths.length} files`);
+    }
 
     // 2. Read and parse files
     console.log('🔍 Parsing files...');
     const allMetrics: Metric[] = [];
     const fileContents = new Map<string, string>();
     
+    let supportedFilesCount = 0;
     for (const filePath of filePaths) {
-      const fileResult = await this.fileReader.read(filePath);
-      fileContents.set(filePath, fileResult.content);
-      
-      if (this.parser.supports(filePath)) {
-        const parseResult = await this.parser.parse(filePath, fileResult.content);
-        if (parseResult.success) {
-          allMetrics.push(...parseResult.metrics);
-        } else {
-          console.warn(`   ⚠️  Failed to parse ${filePath}: ${parseResult.error}`);
+      try {
+        const fileResult = await this.fileReader.read(filePath);
+        fileContents.set(filePath, fileResult.content);
+        
+        if (this.parser.supports(filePath)) {
+          supportedFilesCount++;
+          const parseResult = await this.parser.parse(filePath, fileResult.content);
+          if (parseResult.success) {
+            allMetrics.push(...parseResult.metrics);
+          } else {
+            console.warn(`   ⚠️  Failed to parse ${filePath}: ${parseResult.error}`);
+          }
         }
+      } catch (err) {
+        console.warn(`   ⚠️  Error reading ${filePath}: ${err instanceof Error ? err.message : String(err)}`);
       }
     }
-    console.log(`   Extracted ${allMetrics.length} metrics`);
+    
+    if (filePaths.length > 0 && supportedFilesCount === 0) {
+      console.log('   ⚠️  None of the found files are supported by the parser (.ts, .js, etc)');
+    }
+    
+    console.log(`   Extracted ${allMetrics.length} metrics from ${supportedFilesCount} files`);
 
     // 3. Analyze dependencies and duplication
     console.log('🔗 Analyzing dependencies and duplication...');

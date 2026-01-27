@@ -38,8 +38,16 @@ export interface AnalysisConfig {
  * Default configuration values
  */
 export const DEFAULT_CONFIG: Omit<AnalysisConfig, 'rootPath'> = {
-  patterns: ['src/**/*.ts', 'src/**/*.js'],
-  ignore: ['node_modules', 'dist', 'build', 'coverage', '.git'],
+  patterns: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+  ignore: [
+    '**/node_modules/**',
+    '**/dist/**',
+    '**/build/**',
+    '**/coverage/**',
+    '**/.git/**',
+    '**/.next/**',
+    '**/out/**',
+  ],
   weights: {
     complexity: 0.30,
     size: 0.25,

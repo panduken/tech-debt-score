@@ -14,17 +14,13 @@ export class FileSystemReader implements IFileReader {
     // Resolve the root path to absolute
     const absoluteRoot = resolve(rootPath);
 
-    // Convert patterns to absolute paths relative to root
-    const absolutePatterns = patterns.map(pattern => 
-      join(absoluteRoot, pattern)
-    );
-
-    // Scan for files matching patterns
-    const files = await fg(absolutePatterns, {
+    // Scan for files using cwd - this is more robust for glob matching
+    const files = await fg(patterns, {
+      cwd: absoluteRoot,
       ignore,
       absolute: true,
       onlyFiles: true,
-      dot: false, // Don't include hidden files by default
+      dot: false,
     });
 
     return files;

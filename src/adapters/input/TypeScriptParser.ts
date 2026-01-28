@@ -338,6 +338,21 @@ export class TypeScriptParser implements IParser {
         this.getScriptKind(filePath)
       );
 
+      return this.parseSourceFile(sourceFile, filePath);
+    } catch (error) {
+      return {
+        metrics: [],
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown parsing error',
+      };
+    }
+  }
+
+  /**
+   * Parse an existing SourceFile (avoids re-parsing)
+   */
+  parseSourceFile(sourceFile: ts.SourceFile, filePath: string): ParseResult {
+    try {
       // Extract metrics using AST traversal
       const extractor = new MetricExtractor(sourceFile, filePath);
       const metrics = extractor.extract();

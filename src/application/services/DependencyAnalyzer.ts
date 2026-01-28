@@ -26,7 +26,14 @@ export class DependencyAnalyzer {
       ts.ScriptTarget.Latest,
       true
     );
+    this.analyzeSourceFile(sourceFile);
+  }
 
+  /**
+   * Analyze an existing SourceFile
+   */
+  analyzeSourceFile(sourceFile: ts.SourceFile): void {
+    const filePath = sourceFile.fileName;
     const imports: string[] = [];
 
     // Extract import statements

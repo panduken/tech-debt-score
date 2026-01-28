@@ -47,6 +47,11 @@ export const DEFAULT_CONFIG: Omit<AnalysisConfig, 'rootPath'> = {
     '**/.git/**',
     '**/.next/**',
     '**/out/**',
+    '**/*.d.ts',
+    '**/*.test.{ts,tsx,js,jsx}',
+    '**/*.spec.{ts,tsx,js,jsx}',
+    '**/*.config.{ts,js,mjs,cjs}',
+    '**/.*rc.{ts,js,mjs,cjs}',
   ],
   weights: {
     complexity: 0.30,

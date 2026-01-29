@@ -68,11 +68,11 @@ export class ComplexityRule extends BaseRule {
     return findings;
   }
 
-  calculateScore(findings: Finding[]): number {
+  calculateScore(findings: Finding[], context?: { totalFiles: number }): number {
     if (findings.length === 0) return 100;
 
     // Penalty based on severity
-    const penalty = findings.reduce((sum, finding) => {
+    const rawPenalty = findings.reduce((sum, finding) => {
       switch (finding.severity) {
         case 'high': return sum + 10;
         case 'medium': return sum + 5;
@@ -81,8 +81,21 @@ export class ComplexityRule extends BaseRule {
       }
     }, 0);
 
+    // Normalize by project size if context is available
+    let finalPenalty = rawPenalty;
+    if (context && context.totalFiles > 0) {
+      // Density: Penalty points per file
+      const density = rawPenalty / context.totalFiles;
+      
+      // Scaling: 
+      // If every file has medium complexity (5 pts), density is 5.
+      // We want that to be maybe 50% score? So multiply by 10.
+      // If every file has high complexity (10 pts), density 10 -> score 0?
+      finalPenalty = density * 10;
+    }
+
     // Cap the penalty and invert to get score
-    const score = Math.max(0, 100 - penalty);
+    const score = Math.max(0, 100 - finalPenalty);
     return Math.round(score * 100) / 100;
   }
 }

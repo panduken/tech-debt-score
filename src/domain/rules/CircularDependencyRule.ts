@@ -46,11 +46,12 @@ export class CircularDependencyRule extends BaseRule {
     return findings;
   }
 
-  calculateScore(findings: Finding[]): number {
+  calculateScore(findings: Finding[], context?: { totalFiles: number }): number {
     if (findings.length === 0) return 100;
 
-    // Circular dependencies are serious - heavy penalty
-    const penalty = findings.reduce((sum, finding) => {
+    // Circular dependencies are serious
+    // Calculate raw penalty
+    const rawPenalty = findings.reduce((sum, finding) => {
       switch (finding.severity) {
         case 'high': return sum + 20; // Very bad
         case 'medium': return sum + 12;
@@ -59,7 +60,18 @@ export class CircularDependencyRule extends BaseRule {
       }
     }, 0);
 
-    const score = Math.max(0, 100 - penalty);
+    // Normalize by project size if context is available
+    let finalPenalty = rawPenalty;
+    if (context && context.totalFiles > 0) {
+      // Density: Penalty points per file
+      const density = rawPenalty / context.totalFiles;
+      
+      // Scaling: 1 circular dep per 10 files is bad (density 2.0 -> score drop 40?)
+      // Let's say density of 5 (1 high severity per 4 files) = 100% deduction
+      finalPenalty = density * 20; 
+    }
+
+    const score = Math.max(0, 100 - finalPenalty);
     return Math.round(score * 100) / 100;
   }
 }

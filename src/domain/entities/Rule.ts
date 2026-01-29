@@ -6,6 +6,10 @@
 import type { Metric } from './Metric.js';
 import type { Finding } from './Finding.js';
 
+export interface ScoreContext {
+  totalFiles: number;
+}
+
 export interface Rule {
   /**
    * Unique identifier for this rule
@@ -31,7 +35,7 @@ export interface Rule {
    * Calculate a score (0-100) based on findings
    * where 100 = no issues, 0 = maximum issues
    */
-  calculateScore(findings: Finding[]): number;
+  calculateScore(findings: Finding[], context?: ScoreContext): number;
 }
 
 /**
@@ -45,5 +49,5 @@ export abstract class BaseRule implements Rule {
   ) {}
 
   abstract evaluate(metrics: Metric[]): Finding[];
-  abstract calculateScore(findings: Finding[]): number;
+  abstract calculateScore(findings: Finding[], context?: ScoreContext): number;
 }

@@ -80,10 +80,10 @@ export class SizeRule extends BaseRule {
     return findings;
   }
 
-  calculateScore(findings: Finding[]): number {
+  calculateScore(findings: Finding[], context?: { totalFiles: number }): number {
     if (findings.length === 0) return 100;
 
-    const penalty = findings.reduce((sum, finding) => {
+    const rawPenalty = findings.reduce((sum, finding) => {
       switch (finding.severity) {
         case 'high': return sum + 8;
         case 'medium': return sum + 4;
@@ -92,7 +92,13 @@ export class SizeRule extends BaseRule {
       }
     }, 0);
 
-    const score = Math.max(0, 100 - penalty);
+    let finalPenalty = rawPenalty;
+    if (context && context.totalFiles > 0) {
+      const density = rawPenalty / context.totalFiles;
+      finalPenalty = density * 8;
+    }
+
+    const score = Math.max(0, 100 - finalPenalty);
     return Math.round(score * 100) / 100;
   }
 }

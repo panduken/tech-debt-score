@@ -123,7 +123,9 @@ export class AnalysisService {
       const findings = rule.evaluate(allMetrics);
       allFindings.push(...findings);
       
-      const score = rule.calculateScore(findings);
+      const score = rule.calculateScore(findings, {
+        totalFiles: filePaths.length,
+      });
       rawCategoryScores.push({
         name: rule.name,
         score,

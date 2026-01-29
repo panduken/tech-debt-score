@@ -51,11 +51,11 @@ export class DuplicationRule extends BaseRule {
     return findings;
   }
 
-  calculateScore(findings: Finding[]): number {
+  calculateScore(findings: Finding[], context?: { totalFiles: number }): number {
     if (findings.length === 0) return 100;
 
     // Each duplication finding reduces score
-    const penalty = findings.reduce((sum, finding) => {
+    const rawPenalty = findings.reduce((sum, finding) => {
       switch (finding.severity) {
         case 'high': return sum + 15;
         case 'medium': return sum + 8;
@@ -64,7 +64,15 @@ export class DuplicationRule extends BaseRule {
       }
     }, 0);
 
-    const score = Math.max(0, 100 - penalty);
+    let finalPenalty = rawPenalty;
+    if (context && context.totalFiles > 0) {
+      const density = rawPenalty / context.totalFiles;
+      // If every file has low duplication (4pts), density 4.
+      // 4 * 8 = 32 penalty (Score 68). Reasonable.
+      finalPenalty = density * 8;
+    }
+
+    const score = Math.max(0, 100 - finalPenalty);
     return Math.round(score * 100) / 100;
   }
 }

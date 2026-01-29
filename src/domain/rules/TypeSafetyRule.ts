@@ -44,7 +44,7 @@ export class TypeSafetyRule extends BaseRule {
     return findings;
   }
 
-  calculateScore(findings: Finding[]): number {
+  calculateScore(findings: Finding[], context?: { totalFiles: number }): number {
     if (findings.length === 0) return 100;
 
     // Each 'any' usage reduces the score
@@ -55,9 +55,18 @@ export class TypeSafetyRule extends BaseRule {
     }, 0);
 
     // Each 'any' costs 3 points
-    const penalty = Math.min(100, totalAnyUsages * 3);
-    const score = Math.max(0, 100 - penalty);
+    const rawPenalty = totalAnyUsages * 3;
+    
+    let finalPenalty = rawPenalty;
+    if (context && context.totalFiles > 0) {
+      const density = rawPenalty / context.totalFiles;
+      // Density of 3 (1 'any' per file) -> 3 * 5 = 15 penalty (85 score).
+      finalPenalty = density * 5;
+    } else {
+      finalPenalty = Math.min(100, rawPenalty);
+    }
 
+    const score = Math.max(0, 100 - finalPenalty);
     return Math.round(score * 100) / 100;
   }
 }

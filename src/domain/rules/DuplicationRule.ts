@@ -68,8 +68,8 @@ export class DuplicationRule extends BaseRule {
     if (context && context.totalFiles > 0) {
       const density = rawPenalty / context.totalFiles;
       // If every file has low duplication (4pts), density 4.
-      // 4 * 8 = 32 penalty (Score 68). Reasonable.
-      finalPenalty = density * 8;
+      // 4 * 3 = 12 penalty.
+      finalPenalty = density * 3;
     }
 
     const score = Math.max(0, 100 - finalPenalty);

@@ -88,10 +88,10 @@ export class ComplexityRule extends BaseRule {
       const density = rawPenalty / context.totalFiles;
       
       // Scaling: 
-      // If every file has medium complexity (5 pts), density is 5.
-      // We want that to be maybe 50% score? So multiply by 10.
-      // If every file has high complexity (10 pts), density 10 -> score 0?
-      finalPenalty = density * 10;
+      // Reduced from 10 to 2 to avoid punishing large repos with average legacy code.
+      // A density of 10 (10 points per file) -> 20 penalty. Score 80.
+      // A density of 50 (Very bad code) -> 100 penalty. Score 0.
+      finalPenalty = density * 2;
     }
 
     // Cap the penalty and invert to get score

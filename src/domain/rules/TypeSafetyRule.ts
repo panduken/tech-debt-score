@@ -60,8 +60,9 @@ export class TypeSafetyRule extends BaseRule {
     let finalPenalty = rawPenalty;
     if (context && context.totalFiles > 0) {
       const density = rawPenalty / context.totalFiles;
-      // Density of 3 (1 'any' per file) -> 3 * 5 = 15 penalty (85 score).
-      finalPenalty = density * 5;
+      // Density of 3 (1 'any' per file) -> 3 * 1 = 3 penalty (97 score).
+      // Density of 100 (complete lack of types) -> 100 penalty.
+      finalPenalty = density * 1;
     } else {
       finalPenalty = Math.min(100, rawPenalty);
     }

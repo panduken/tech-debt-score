@@ -95,7 +95,7 @@ export class SizeRule extends BaseRule {
     let finalPenalty = rawPenalty;
     if (context && context.totalFiles > 0) {
       const density = rawPenalty / context.totalFiles;
-      finalPenalty = density * 8;
+      finalPenalty = density * 2;
     }
 
     const score = Math.max(0, 100 - finalPenalty);

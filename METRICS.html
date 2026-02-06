@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Technical Debt Score - Metrics Guide</title>
+    <style>
+      :root {
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
+        --bg: #0f172a;
+        --card-bg: #1e293b;
+        --text: #e2e8f0;
+        --text-muted: #94a3b8;
+        --border: #334155;
+        --success: #22c55e;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        padding: 2rem;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      header {
+        margin-bottom: 3rem;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(to right, #60a5fa, #a78bfa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+      }
+
+      p.subtitle {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+      }
+
+      section {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 0.75rem;
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        color: #fff;
+      }
+
+      .rule-card {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid var(--primary);
+      }
+
+      .rule-card h3 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 1.25rem;
+      }
+
+      .badge {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 999px;
+        background: var(--primary);
+        color: white;
+        font-weight: 600;
+      }
+
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1rem;
+      }
+
+      .metric-item {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 1rem;
+        border-radius: 6px;
+      }
+
+      .metric-name {
+        display: block;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 0.25rem;
+      }
+
+      .threshold {
+        font-family: monospace;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.1rem 0.3rem;
+        border-radius: 4px;
+        color: #fbbf24;
+      }
+
+      .scoring-explanation {
+        background: linear-gradient(135deg, #1e1e24 0%, #2d2b42 100%);
+        border-left: 4px solid #8b5cf6;
+      }
+
+      code {
+        font-family: "Fira Code", monospace;
+        background: rgba(0, 0, 0, 0.3);
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+
+      footer {
+        text-align: center;
+        color: var(--text-muted);
+        margin-top: 4rem;
+        font-size: 0.9rem;
+      }
+
+      .impact-high {
+        border-color: var(--danger);
+      }
+      .impact-med {
+        border-color: var(--warning);
+      }
+
+      .impact-high .badge {
+        background-color: var(--danger);
+      }
+      .impact-med .badge {
+        background-color: var(--warning);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Technical Debt Score</h1>
+        <p class="subtitle">Understanding how we calculate code quality</p>
+      </header>
+
+      <!-- Scoring Method -->
+      <section class="scoring-explanation">
+        <h2>📊 How Scoring Works</h2>
+        <p>
+          Unlike traditional linters that simply count errors,
+          <strong>Tech Debt Score</strong> uses a
+          <strong>Density-Based Algorithm</strong>. This ensures that large
+          monorepos are not unfairly penalized just for having more code.
+        </p>
+        <br />
+        <p>The score is calculated as:</p>
+        <div
+          style="
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            font-family: monospace;
+          "
+        >
+          Score = 100 - (Total Penalty / Total Files) × Scale Factor
+        </div>
+        <p>
+          This measures the <strong>concentration of issues</strong>. A
+          repository with 1,000 files and 1,000 issues will have the same score
+          as a repository with 10 files and 10 issues.
+        </p>
+      </section>
+
+      <!-- Rules -->
+      <section>
+        <h2>📏 Rules & Thresholds</h2>
+
+        <!-- Complexity -->
+        <div class="rule-card impact-high">
+          <h3>Complexity Rule <span class="badge">Critical</span></h3>
+          <p>
+            Identifies code that is difficult to understand, test, and maintain.
+          </p>
+          <div class="metrics-grid">
+            <div class="metric-item">
+              <span class="metric-name">Cyclomatic Complexity</span>
+              <p>Measures independent paths through code.</p>
+              <p>Threshold: <span class="threshold">> 10</span></p>
+            </div>
+            <div class="metric-item">
+              <span class="metric-name">Nesting Depth</span>
+              <p>Deeply nested loops and conditionals.</p>
+              <p>Threshold: <span class="threshold">> 4 levels</span></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Size -->
+        <div class="rule-card">
+          <h3>Size Rule <span class="badge">Important</span></h3>
+          <p>
+            Detects "God classes" and massive functions that violate the Single
+            Responsibility Principle.
+          </p>
+          <div class="metrics-grid">
+            <div class="metric-item">
+              <span class="metric-name">File Length</span>
+              <p>Files that do too much.</p>
+              <p>Threshold: <span class="threshold">> 300 lines</span></p>
+            </div>
+            <div class="metric-item">
+              <span class="metric-name">Function Length</span>
+              <p>Functions that should be split up.</p>
+              <p>Threshold: <span class="threshold">> 50 lines</span></p>
+            </div>
+            <div class="metric-item">
+              <span class="metric-name">Parameter Count</span>
+              <p>Functions with too many arguments.</p>
+              <p>Threshold: <span class="threshold">> 5 params</span></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Type Safety -->
+        <div class="rule-card impact-med">
+          <h3>Type Safety Rule <span class="badge">Medium</span></h3>
+          <p>
+            Ensures TypeScript is being used effectively to prevent runtime
+            errors.
+          </p>
+          <div class="metrics-grid">
+            <div class="metric-item">
+              <span class="metric-name">Any Usage</span>
+              <p>
+                Usage of the <code>any</code> type which bypasses type checking.
+              </p>
+              <p>Threshold: <span class="threshold">> 0 usages</span></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Duplication -->
+        <div class="rule-card impact-high">
+          <h3>Code Duplication Rule <span class="badge">Critical</span></h3>
+          <p>
+            Detects copy-pasted code using semantic token matching (ignores
+            whitespace/renaming).
+          </p>
+          <div class="metrics-grid">
+            <div class="metric-item">
+              <span class="metric-name">Duplicate Blocks</span>
+              <p>Identical code chunks appearing in multiple places.</p>
+              <p>
+                Threshold:
+                <span class="threshold">50+ tokens, 95% similarity</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Circular Deps -->
+        <div class="rule-card impact-high">
+          <h3>Circular Dependency Rule <span class="badge">Severe</span></h3>
+          <p>
+            Detects modules that tightly couple to each other, making
+            refactoring impossible.
+          </p>
+          <div class="metrics-grid">
+            <div class="metric-item">
+              <span class="metric-name">Module Cycles</span>
+              <p>Files importing each other (e.g., A -> B -> C -> A).</p>
+              <p>Threshold: <span class="threshold">Any cycle</span></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <p>Generated by Tech Debt Score</p>
+      </footer>
+    </div>
+  </body>
+</html>

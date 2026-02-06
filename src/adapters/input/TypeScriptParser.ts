@@ -118,8 +118,29 @@ class MetricExtractor {
       this.extractFunctionMetrics(node as ts.FunctionLikeDeclaration);
     }
 
+    // Check for other 'any' usages
+    this.detectAdditionalAnyUsage(node);
+
     // Recurse to children
     ts.forEachChild(node, (child) => this.visit(child));
+  }
+
+  /**
+   * Detect 'any' usage in non-function contexts
+   */
+  private detectAdditionalAnyUsage(node: ts.Node): void {
+    if (ts.isVariableDeclaration(node) && node.type && this.isAnyType(node.type)) {
+      this.addAnyMetric(1, `variable '${node.name.getText()}'`, node);
+    }
+    else if ((ts.isPropertyDeclaration(node) || ts.isPropertySignature(node)) && node.type && this.isAnyType(node.type)) {
+      this.addAnyMetric(1, `property '${node.name.getText()}'`, node);
+    }
+    else if (ts.isTypeAliasDeclaration(node) && node.type && this.isAnyType(node.type)) {
+      this.addAnyMetric(1, `type alias '${node.name.getText()}'`, node);
+    }
+    else if (ts.isAsExpression(node) && node.type && this.isAnyType(node.type)) {
+      this.addAnyMetric(1, 'as expression', node);
+    }
   }
 
   /**
@@ -198,16 +219,20 @@ class MetricExtractor {
     // Count 'any' usage in function signature
     const anyCount = this.countAnyUsage(node);
     if (anyCount > 0) {
-      this.metrics.push(
-        new MetricBuilder()
-          .withName('any-usage')
-          .withValue(anyCount)
-          .withFilePath(this.filePath)
-          .withContext(functionName)
-          .withLocation(location)
-          .build()
-      );
+      this.addAnyMetric(anyCount, functionName, node);
     }
+  }
+
+  private addAnyMetric(count: number, context: string, node: ts.Node): void {
+    this.metrics.push(
+      new MetricBuilder()
+        .withName('any-usage')
+        .withValue(count)
+        .withFilePath(this.filePath)
+        .withContext(context)
+        .withLocation(this.getLocation(node))
+        .build()
+    );
   }
 
   /**

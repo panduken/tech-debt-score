@@ -42,7 +42,7 @@ The first version focuses only on **signals fully controlled by the engineering 
 - Code complexity (cyclomatic, nesting)
 - File and function size
 - Code duplication
-- Test coverage (if available)
+
 - Type safety indicators
 - Project structure consistency
 
@@ -173,7 +173,7 @@ For detailed architecture information, see [TECHNICAL_DESIGN.md](./TECHNICAL_DES
 
 ### 📋 Roadmap
 
-- [ ] Additional rules (duplication, test coverage)
+- [ ] Additional rules (duplication)
 - [ ] Configuration file support
 - [ ] Enhanced CLI with options
 - [ ] Git integration for trend tracking

@@ -48,7 +48,7 @@ function printHelp() {
   console.log(`
 ┌─────────────────────────────────────────────┐
 │  tech-debt-score - Quantify Technical Debt  │
-│  Version: 0.1.7                             │
+│  Version: 0.1.13                            │
 └─────────────────────────────────────────────┘
 
 Usage:

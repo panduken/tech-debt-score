@@ -151,7 +151,7 @@ For detailed architecture information, see [TECHNICAL_DESIGN.md](./TECHNICAL_DES
 
 ## Development Status
 
-**Current Version:** 0.1.0 (Beta)
+**Current Version:** 0.1.13 (Beta)
 
 ### ✅ Completed
 
@@ -160,23 +160,24 @@ For detailed architecture information, see [TECHNICAL_DESIGN.md](./TECHNICAL_DES
 - [x] Application layer (services and ports)
 - [x] **Full AST parsing implementation**
 - [x] **File scanning with fast-glob**
-- [x] **Code Duplication detection**
-- [x] **Circular Dependency detection**
+- [x] **Code duplication detection**
+- [x] **Circular dependency detection**
 - [x] CLI entry point with JSON export
+- [x] Density-based scoring by analyzed file count
 
 ### 🚧 Roadmap v0.2.0
 
 - [ ] Configuration file support (`.tech-debt-score.json`)
 - [ ] Git integration for trend tracking
 - [ ] Ignore patterns configuration
-- [ ] Unit tests coverage improvement
+- [ ] Real test runner and broader test coverage
 
 ### 📋 Roadmap
 
-- [ ] Additional rules (duplication)
-- [ ] Configuration file support
-- [ ] Enhanced CLI with options
+- [ ] Improve duplication similarity detection
+- [ ] Improve circular dependency resolution
 - [ ] Git integration for trend tracking
+- [ ] Additional output formats (HTML, Markdown)
 - [ ] VS Code extension
 
 ---

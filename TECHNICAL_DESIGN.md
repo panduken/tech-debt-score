@@ -2,7 +2,7 @@
 
 > **Version:** 1.0  
 > **Last Updated:** 2026-01-20  
-> **Status:** Design Phase
+> **Status:** Implemented (v0.1.x; actively evolving)
 
 ---
 

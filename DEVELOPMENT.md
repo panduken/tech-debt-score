@@ -15,9 +15,8 @@ src/
 │   ├── ports/           # Interface definitions
 │   └── config/          # AnalysisConfig
 │
-├── adapters/            # 🚧 External integrations (PARTIAL)
-│   ├── input/           # FileSystemReader (TODO: implement scan)
-│   │                    # TypeScriptParser (TODO: implement AST parsing)
+├── adapters/            # ✅ External integrations
+│   ├── input/           # FileSystemReader, TypeScriptParser
 │   └── output/          # TerminalReporter, JsonExporter (COMPLETE)
 │
 ├── cli/                 # ✅ Command-line interface (COMPLETE)
@@ -40,32 +39,9 @@ src/
 
 ### 🚧 TODO - High Priority
 
-1. **Implement FileSystemReader.scan()** (Currently returns empty array)
-   - Use `fast-glob` or `glob` library
-   - Implement file pattern matching
-   - Respect ignore patterns
-
-2. **Implement TypeScriptParser.parse()** (Currently only counts LOC)
-   - Use `@typescript-eslint/parser` or TypeScript Compiler API
-   - Extract all metrics:
-     - Function length
-     - Cyclomatic complexity
-     - Nesting depth
-     - Parameter count
-     - `any` usage (TypeScript)
-     - TODO/FIXME comments
-
-3. **Add Dependencies**
-
-   ```bash
-   npm install fast-glob
-   npm install @typescript-eslint/parser @typescript-eslint/typescript-estree
-   ```
-
-4. **Write Tests**
-   - Domain layer unit tests (high priority)
-   - Application layer integration tests
-   - E2E tests with sample codebases
+1. **Configure a real test runner** and execute the existing test suites.
+2. **Improve circular dependency resolution** across TS/JS extensions and index files.
+3. **Improve duplication detection** to support actual similarity rather than exact normalized matches.
 
 ### 📋 TODO - Medium Priority
 
@@ -90,7 +66,7 @@ src/
 # Build the project
 npm run build
 
-# Run analysis (placeholder - needs implementation)
+# Run analysis
 npm run analyze
 
 # Run with specific path

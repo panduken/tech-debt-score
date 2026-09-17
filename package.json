@@ -11,8 +11,9 @@
     "dev": "tsc && node dist/cli/index.js",
     "analyze": "tsc && node dist/cli/index.js",
     "scan": "npm run build && node dist/cli/index.js .",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "files": [
     "dist",
@@ -44,7 +45,8 @@
   "description": "Quantify technical debt you can actually control. Built by developers, for developers.",
   "devDependencies": {
     "@types/node": "^25.0.9",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "vitest": "^5.0.1"
   },
   "dependencies": {
     "fast-glob": "^3.3.3",

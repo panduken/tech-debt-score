@@ -108,6 +108,46 @@ npm run analyze
 npm run scan
 ```
 
+### Publishing a new version
+
+Before publishing, make sure the working tree is clean and that you are
+authenticated with npm:
+
+```bash
+npm login --auth-type=web --registry=https://registry.npmjs.org/
+npm whoami
+```
+
+The web login supports passkeys and security keys. Then run the validation
+and release commands:
+
+```bash
+# Run the same checks used by CI
+npm test
+npm run build
+npm run scan
+
+# Bump the patch version, for example 0.1.15 → 0.1.16
+npm version patch
+
+# Preview the files that will be included
+npm pack --dry-run
+
+# Publish the package with the latest tag
+npm publish
+```
+
+`npm version patch` updates `package.json` and `package-lock.json`, and creates
+a Git commit and tag. Push the commit and tag after publishing:
+
+```bash
+git push origin main --follow-tags
+```
+
+Never publish credentials, tokens, or security-key information in the
+repository. If a release fails, check the package version and authentication
+status before retrying; a published name/version combination cannot be reused.
+
 ---
 
 ## Project Structure
@@ -169,9 +209,9 @@ For detailed architecture information, see [TECHNICAL_DESIGN.md](./TECHNICAL_DES
 #### v0.2 — Stabilization
 
 - [x] Real test runner with initial domain, application, and integration coverage
-- [ ] Keep documentation and version metadata synchronized
-- [ ] Add continuous integration for build, tests, and self-scan
-- [ ] Document the package publishing workflow
+- [x] Keep documentation and version metadata synchronized
+- [x] Add continuous integration for build, tests, and self-scan
+- [x] Document the package publishing workflow
 
 #### v0.3 — Configuration and CI
 

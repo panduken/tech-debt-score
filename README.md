@@ -42,9 +42,8 @@ The first version focuses only on **signals fully controlled by the engineering 
 - Code complexity (cyclomatic, nesting)
 - File and function size
 - Code duplication
-
 - Type safety indicators
-- Project structure consistency
+- Project structure consistency, including circular dependencies
 
 > ⚠️ External factors such as deprecated dependencies, security vulnerabilities, or runtime risks are intentionally **out of scope for v1**.
 
@@ -151,7 +150,7 @@ For detailed architecture information, see [TECHNICAL_DESIGN.md](./TECHNICAL_DES
 
 ## Development Status
 
-**Current Version:** 0.1.13 (Beta)
+**Current Version:** 0.1.15 (Beta)
 
 ### ✅ Completed
 
@@ -165,19 +164,43 @@ For detailed architecture information, see [TECHNICAL_DESIGN.md](./TECHNICAL_DES
 - [x] CLI entry point with JSON export
 - [x] Density-based scoring by analyzed file count
 
-### 🚧 Roadmap v0.2.0
+### 🚧 Roadmap to v1.0
+
+#### v0.2 — Stabilization
+
+- [x] Real test runner with initial domain, application, and integration coverage
+- [ ] Keep documentation and version metadata synchronized
+- [ ] Add continuous integration for build, tests, and self-scan
+- [ ] Document the package publishing workflow
+
+#### v0.3 — Configuration and CI
 
 - [ ] Configuration file support (`.tech-debt-score.json`)
-- [ ] Git integration for trend tracking
-- [ ] Ignore patterns configuration
-- [ ] Real test runner and broader test coverage
+- [ ] Custom ignore patterns
+- [ ] Custom file patterns
+- [ ] `--fail-under` threshold for CI pipelines
+- [ ] Clearer CLI errors and exit codes
 
-### 📋 Roadmap
+#### v0.4 — Analysis Quality
 
-- [ ] Improve duplication similarity detection
-- [ ] Improve circular dependency resolution
-- [ ] Git integration for trend tracking
-- [ ] Additional output formats (HTML, Markdown)
+- [ ] Improve duplication detection beyond exact normalized matches
+- [ ] Improve circular dependency resolution across extensions and index files
+- [ ] Improve AST metric accuracy
+- [ ] Add performance benchmarks
+
+#### v1.0 — Stable Release
+
+- [ ] Define and document a stable scoring contract
+- [ ] Document the JSON report schema
+- [ ] Establish a backward-compatibility policy
+- [ ] Version the configuration format
+- [ ] Validate the published npm package in a clean project
+
+### Future Ideas
+
+- [ ] Git integration and historical trend tracking
+- [ ] HTML and Markdown reports
+- [ ] Additional language support
 - [ ] VS Code extension
 
 ---
